@@ -180,13 +180,13 @@ work.
                                           alignment and label     
                                           distribution            
 
-  `02_volume_visualization.ipynb`         Load and visualize MRI  Not started
-                                          volumes in axial,       
+  `02_volume_visualization.ipynb`         Load and visualize MRI  **Completed for one
+                                          volumes in axial,       patient**
                                           coronal and sagittal    
                                           planes                  
 
-  `03_multimodal_visualization.ipynb`     Compare T1n, T1c, T2w   Not started
-                                          and T2f for the same    
+  `03_multimodal_visualization.ipynb`     Compare T1n, T1c, T2w   **Completed for one
+                                          and T2f for the same    patient**
                                           patient/slices          
 
   `04_segmentation_visualization.ipynb`   Visualize ground-truth  Not started
@@ -238,6 +238,108 @@ statistics. They illustrate strong background/foreground imbalance.
 Confirm label semantics before interpreting the nonzero values
 biologically.
 
+### Notebook 02 completed
+
+Visualized the T1n volume for patient `BraTS-GLI-02547-101`.
+
+Observed volume properties:
+
+-   Shape: `(182, 218, 182)`.
+-   Data type returned by `get_fdata()`: `float64` (the stored data type
+    inspected in Notebook 01 was `float32`).
+-   Minimum intensity: `0.0`.
+-   Maximum intensity: `505.9227600097656`.
+-   Mean intensity: `47.59497981219395`.
+-   Standard deviation: `104.11911019178928`.
+-   Total voxels: `7,221,032`.
+-   Zero-intensity voxels: `5,829,451` (`80.72877948747492%`).
+
+Spatial orientation:
+
+-   Original orientation: `('L', 'A', 'S')`.
+-   Canonical orientation: `('R', 'A', 'S')`.
+-   Original affine:
+
+    ```text
+    [[ -1.   0.   0.  90.]
+     [  0.   1.   0. -126.]
+     [  0.   0.   1. -72.]
+     [  0.   0.   0.   1.]]
+    ```
+
+-   Canonical affine:
+
+    ```text
+    [[  1.   0.   0. -91.]
+     [  0.   1.   0. -126.]
+     [  0.   0.   1. -72.]
+     [  0.   0.   0.   1.]]
+    ```
+
+-   Canonical shape remained `(182, 218, 182)`.
+-   The volume was visualized in axial, coronal and sagittal planes
+    after canonical reorientation.
+
+Intensity-distribution observations:
+
+-   The histogram of all voxels is dominated by the large number of
+    zero-intensity background voxels.
+-   A second histogram was generated using only nonzero voxels.
+-   Nonzero intensities were observed approximately across the range
+    30–420, with a non-Gaussian, multi-peaked distribution.
+-   These histogram observations do not establish a direct mapping
+    between intensity peaks and specific tissue types.
+
+These observations are from **one patient and the T1n modality only**.
+No normalization, resizing, resampling or other preprocessing was
+performed.
+
+### Notebook 03 completed
+
+Compared all four MRI modalities for patient `BraTS-GLI-02547-101`.
+
+Observed volume properties:
+
+| Property | T1n | T1c | T2w | T2f (FLAIR) |
+|---|---:|---:|---:|---:|
+| Shape | `(182, 218, 182)` | `(182, 218, 182)` | `(182, 218, 182)` | `(182, 218, 182)` |
+| Data type | `float32` | `float32` | `float32` | `float32` |
+| Minimum intensity | 0.0 | 0.0 | 0.0 | 0.0 |
+| Maximum intensity | 505.92276 | 1253.4319 | 1731.0282 | 443.16007 |
+
+All four modalities were converted to canonical RAS+ orientation and
+visualized at matching slice indices in axial, coronal and sagittal
+planes.
+
+Nonzero-voxel intensity statistics:
+
+| Statistic | T1n | T1c | T2w | T2f (FLAIR) |
+|---|---:|---:|---:|---:|
+| Mean | 246.97437 | 284.9389 | 506.16083 | 148.68407 |
+| Standard deviation | 83.73867 | 101.013916 | 243.04968 | 40.974316 |
+| Median | 251.20512 | 283.37213 | 428.13852 | 151.01562 |
+| 1st percentile | 55.669838 | 74.716095 | 233.08797 | 20.46959 |
+| 99th percentile | 401.5567 | 672.0205 | 1344.6565 | 232.09586 |
+
+Histogram observations:
+
+- T1n showed a broad distribution with multiple concentrations.
+- T1c showed a main concentration and a long high-intensity tail.
+- T2w showed a broad, strongly right-skewed distribution.
+- T2f (FLAIR) showed a comparatively concentrated distribution.
+
+These statistics were calculated after excluding zero-intensity voxels.
+They describe **one patient only**, not the full dataset. Histogram
+peaks alone do not identify specific tissues or tumour components.
+
+The four modalities were studied as complementary MRI signal sources:
+T1n provides anatomical context, T1c can highlight contrast-enhancing
+regions, T2w is sensitive to water content, and FLAIR suppresses much
+of the CSF signal while retaining many abnormal T2-like hyperintensities.
+
+No normalization, resizing, resampling or model preprocessing was
+performed.
+
 ### Current status
 
 -   Dataset access: complete.
@@ -245,24 +347,22 @@ biologically.
 -   NIfTI metadata inspection: complete.
 -   Modality shape and affine consistency check: complete.
 -   Initial segmentation-label distribution: complete for one patient.
--   MRI visualization: not started.
+-   T1n volume visualization in three anatomical planes: complete for
+    one patient.
+-   T1n intensity-distribution inspection: complete for one patient.
+-   Four-modality visualization and nonzero intensity-distribution
+    comparison: complete for one patient.
 -   Model selection/checkpoint validation: not started.
 -   Inference and quantitative evaluation: not started.
 -   Application/backend: not started.
 
 ## 10. Immediate next steps
 
-1.  Create `02_volume_visualization.ipynb`.
-2.  Load one modality with NiBabel and inspect its NumPy array shape,
-    intensity range and representative slices.
-3.  Visualize axial, coronal and sagittal planes, being careful to use
-    the affine/orientation information rather than assuming array axes
-    correspond directly to anatomical directions.
-4.  In the next notebook, compare all four modalities at matching
-    anatomical locations.
-5.  Visualize the segmentation mask and verify the official label
-    mapping.
-6.  Only then begin model/checkpoint selection and preprocessing design.
+1.  Create `04_segmentation_visualization.ipynb`.
+2.  Visualize the ground-truth segmentation mask over MRI slices.
+3.  Verify the official BraTS 2024 label mapping before interpreting
+    tumour regions or calculating region-specific statistics.
+4.  Only then begin model/checkpoint selection and preprocessing design.
 
 ## 11. Working principles
 
